@@ -23,7 +23,7 @@ export const vote = (id) => {
   console.log('vote', id)
   // dispatch a js object of correct form
   return ({
-    type: 'INCREMENT',
+    type: 'ANECDOTE-INCREMENT',
     data: {
       id
     }
@@ -32,7 +32,7 @@ export const vote = (id) => {
 
 export const create = (anecdote) => {
   return ({
-    type: 'CREATE',
+    type: 'ANECDOTE-CREATE',
     data: {
       anecdote
     }
@@ -42,11 +42,11 @@ export const create = (anecdote) => {
 // REDUCER  ---------------------------------------------------------
 const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (state = initialState, action) => {
+const anecdoteReducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
   switch (action.type) {
-    case 'INCREMENT':
+    case 'ANECDOTE-INCREMENT':
       const id = action.data.id
       const elemToChange = state.find(elem => elem.id === id)
       const changedElem = {
@@ -59,7 +59,7 @@ const reducer = (state = initialState, action) => {
           elem.id === id ? changedElem : elem)
         .sort((a, b) => b.votes - a.votes)
 
-    case 'CREATE':
+    case 'ANECDOTE-CREATE':
       const newElement = asObject(action.data.anecdote)
       return state.concat(newElement)
 
@@ -67,4 +67,4 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-export default reducer
+export default anecdoteReducer

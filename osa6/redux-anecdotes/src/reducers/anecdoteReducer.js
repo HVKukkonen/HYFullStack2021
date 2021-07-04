@@ -1,4 +1,4 @@
-import { completeAnecdote } from "../helpers"
+import anecdoteService from "../services/anecdotes"
 
 // ACTION CREATORS, I.E., FORMATTERS FOR DISPATCHING TO THE REDUCER ---------------------------
 export const vote = (id) => {
@@ -20,11 +20,18 @@ export const createAnecdote = (completeAnecdote) => {
 }
 
 // redux state follows the data structure of the database, no transformations applied
-export const initializeAnecdotes = (allAnecdotes) => {
-  return ({
-    type: 'ANECDOTE-FETCH',
-    data: allAnecdotes
-  })
+export const initializeAnecdotes = () => {
+  return (
+    // async arrow (or lambda) function that handles backend and dispatch
+    async (dispatchFunction) => {
+      const anecdotes = await anecdoteService.getAll()
+      // why does this resolve to the actual dispatch? Where is it given?
+      dispatchFunction({
+        type: 'ANECDOTE-FETCH',
+        data: anecdotes
+      })
+    }
+  )
 }
 
 // REDUCER  ---------------------------------------------------------

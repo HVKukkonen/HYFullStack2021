@@ -1,20 +1,30 @@
 const notificationAtStart = 'Es hier ist ein Notification'
 
 // ACTION CREATORS ---------------------------------------------
-export const remove = () => {
+export const removeNotification = () => {
   return ({
     type: 'NOTIFICATION-REMOVE'
   })
 }
 
-export const set = (notification, timeoutID) => {
-  return ({
-    type: 'NOTIFICATION-CREATE',
-    data: {
-      notification,
-      timeoutID
+export const setNotification = (notification, delay) => {
+  return (
+    (dispatchFunction) => {
+      // save the timeoutID to reset timer if re-vote occurs before timer runs out
+      const timeoutID = setTimeout(
+        // remove notification after a delay
+        () => dispatchFunction(removeNotification()),
+        delay * 1000
+      )
+      dispatchFunction({
+        type: 'NOTIFICATION-CREATE',
+        data: {
+          notification,
+          timeoutID
+        }
+      })
     }
-  })
+  )
 }
 
 // HELPERS -----------------------------------------------------

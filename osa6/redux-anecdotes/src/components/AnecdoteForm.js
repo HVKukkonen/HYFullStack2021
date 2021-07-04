@@ -12,8 +12,7 @@ const AnecdoteForm = () => {
     const anecdote = event.target.newAnecdote.value
     // clear form
     event.target.newAnecdote.value = ''
-    const dbAnecdote = await anecdoteService.create(anecdote)
-    dispatch(createAnecdote(dbAnecdote))
+    dispatch(createAnecdote(anecdote))
   }
 
   return (

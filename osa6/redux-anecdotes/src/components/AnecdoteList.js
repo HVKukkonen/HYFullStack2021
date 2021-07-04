@@ -11,7 +11,8 @@ const AnecdoteList = () => {
 
   const voteAndNotify = (anecdote) => {
     // to anecdote reducer
-    dispatch(vote(anecdote.id))
+    dispatch(vote(anecdote))
+
     // clear old timer in case re-vote occurs before timer runs out
     clearTimeout(notification.timeoutID)
     // to notification reducer

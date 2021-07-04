@@ -1,22 +1,32 @@
 import anecdoteService from "../services/anecdotes"
 
 // ACTION CREATORS, I.E., FORMATTERS FOR DISPATCHING TO THE REDUCER ---------------------------
-export const vote = (id) => {
-  console.log('vote', id)
+export const vote = (anecdote) => {
   // dispatch a js object of correct form
-  return ({
-    type: 'ANECDOTE-INCREMENT',
-    data: {
-      id
+  return (
+    async (dispatchFunction) => {
+      // new element that has same fields gets its vote overwriten
+      const updatedAnecdote = {...anecdote, votes: anecdote.votes + 1}
+      const completeAnecdote = await anecdoteService.update(updatedAnecdote)
+      console.log('complete anecdote at vote: ', completeAnecdote)
+      dispatchFunction({
+        type: 'ANECDOTE-INCREMENT',
+        completeAnecdote
+      })
     }
-  })
+  )
 }
 
-export const createAnecdote = (completeAnecdote) => {
-  return ({
-    type: 'ANECDOTE-CREATE',
-    completeAnecdote
-  })
+export const createAnecdote = (anecdote) => {
+  return (
+    async (dispatchFunction) => {
+      const completeAnecdote = await anecdoteService.create(anecdote)
+      dispatchFunction({
+        type: 'ANECDOTE-CREATE',
+        completeAnecdote
+      })
+    }
+  )
 }
 
 // redux state follows the data structure of the database, no transformations applied
@@ -40,16 +50,10 @@ const anecdoteReducer = (state = [], action) => {
   console.log('action', action)
   switch (action.type) {
     case 'ANECDOTE-INCREMENT':
-      const id = action.data.id
-      const elemToChange = state.find(elem => elem.id === id)
-      const changedElem = {
-        ...elemToChange,  // spread the iterable element
-        votes: elemToChange.votes + 1  // replace matching key with new value
-      }
+      const changedElem = action.completeAnecdote
       return state
-        // change the changed element
-        .map(elem =>
-          elem.id === id ? changedElem : elem)
+        // change the voted element in frontend
+        .map(elem => elem.id === changedElem.id ? changedElem : elem)
         .sort((a, b) => b.votes - a.votes)
 
     case 'ANECDOTE-CREATE':

@@ -1,8 +1,7 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 
-const Notification = () => {
-  const notification = useSelector(state => state.notification.notification)
+const Notification = (props) => {
   const style = {
     border: 'solid',
     padding: 10,
@@ -10,9 +9,18 @@ const Notification = () => {
   }
   return (
     <div style={style}>
-      {notification}
+      {props.notification.notification}
     </div>
   )
 }
 
-export default Notification
+const mapStateToProps = (state) => {
+  return ({
+    notification: state.notification
+  })
+}
+
+// link state to mapStateToProps and map this to AnecdoteForm props
+export default connect(
+  mapStateToProps
+)(Notification)

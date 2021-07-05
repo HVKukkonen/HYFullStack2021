@@ -1,10 +1,8 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { createAnecdote } from '../reducers/anecdoteReducer'
-import anecdoteService from '../services/anecdotes'
 
-const AnecdoteForm = () => {
-  const dispatch = useDispatch()
+const AnecdoteForm = (props) => {
 
   // event handler
   const submitAnecdote = async (event) => {
@@ -12,7 +10,7 @@ const AnecdoteForm = () => {
     const anecdote = event.target.newAnecdote.value
     // clear form
     event.target.newAnecdote.value = ''
-    dispatch(createAnecdote(anecdote))
+    props.createAnecdote(anecdote)
   }
 
   return (
@@ -26,4 +24,12 @@ const AnecdoteForm = () => {
   )
 }
 
-export default AnecdoteForm
+const mapDispatchToProps = {
+  createAnecdote
+}
+
+// link dispatch to action creator and map this to AnecdoteForm props
+export default connect(
+  null,
+  mapDispatchToProps
+)(AnecdoteForm)

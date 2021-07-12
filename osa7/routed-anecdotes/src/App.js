@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
+import { Switch, Route, Link, useParams, useHistory, useRouteMatch } from 'react-router-dom'
 
 const Menu = () => {
   const padding = {
@@ -18,7 +18,11 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote =>
+        <li key={anecdote.id}>
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
+      )}
     </ul>
   </div>
 )
@@ -45,6 +49,14 @@ const Footer = () => (
   </div>
 )
 
+const Details = (anecdote) => 
+  <div>
+    <h2>{`${anecdote.content} by ${anecdote.author}`}</h2>
+    {`has ${anecdote.votes} votes \n for more info see `}
+    <a href={anecdote.info} target='_blank'>{anecdote.info}</a>
+    <br/><br/>
+  </div>
+
 const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
@@ -59,6 +71,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    
   }
 
   return (
@@ -104,9 +117,15 @@ const App = () => {
 
   const [notification, setNotification] = useState('')
 
+  const history = useHistory()
+
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    // redirect by controlling url
+    history.push('/')
+    setNotification(`a new anecdote ${anecdote.content} created!`)
+    setTimeout(() => setNotification(''), 10000)
   }
 
   const anecdoteById = (id) =>
@@ -123,11 +142,13 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const match = useRouteMatch('/anecdotes/:id')
+
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      <BrowserRouter>
+      {notification}
         <Switch>
           <Route path='/about'>
             <About />
@@ -135,11 +156,14 @@ const App = () => {
           <Route path='/create'>
             <CreateNew addNew={addNew} />
           </Route>
+          <Route path='/anecdotes/:id'>
+            {/*useParams accesses url parameters*/}
+            {match ? Details(anecdoteById(match.params.id)) : null}
+          </Route>
           <Route path='/'>
             <AnecdoteList anecdotes={anecdotes} />
           </Route>
         </Switch>
-      </BrowserRouter>
       <Footer />
     </div>
   )

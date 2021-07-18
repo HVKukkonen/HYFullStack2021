@@ -98,8 +98,8 @@ const CreateNew = (props) => {
           <input {...info} />
         </div>
         <button>create</button>
-        <button onClick={() =>clearForm()}>clear</button>
       </form>
+      <button onClick={clearForm}>clear</button>
     </div>
   )
 }

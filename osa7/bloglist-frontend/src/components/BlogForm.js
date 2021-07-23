@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 const BlogForm = (props) => <form
   onSubmit={props.blogSubmit}>
@@ -27,11 +27,11 @@ const BlogForm = (props) => <form
   <button id='blogform-create' type='submit'>
     create
   </button>
-</form>
+</form>;
 
 BlogForm.propTypes = {
   blogName: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired
-}
+  author: PropTypes.string.isRequired,
+};
 
-export default BlogForm
+export default BlogForm;

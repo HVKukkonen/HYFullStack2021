@@ -2,26 +2,12 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeNotification, setNotification } from '../reducers/notificationReducer';
 
-const Blog = ({ blog, like_handler: likeHandler }) => {
+const Blog = ({ blog, likeHandler }) => {
   let output;
   const [show, setShow] = useState(false);
   const showButton = <button onClick={() => setShow(!show)}>{(show) ? 'hide' : 'show'}</button>;
   const likeButton = () => {
-    const dispatch = useDispatch();
-    const activeTimeout = useSelector((state) => state.timeoutID);
-
-    const notify = (notification) => {
-      clearTimeout(activeTimeout);
-      const timeoutID = setTimeout(
-        () => dispatch(removeNotification()),
-        3000,
-      );
-      dispatch(setNotification(notification, timeoutID));
-    };
-
-    notify(`You like ${blog.title}`);
-
-    return (<button onClick={() => likeHandler()}>like</button>)
+    return (<button onClick={() => likeHandler()}>like</button>);
   };
 
   if (show) {

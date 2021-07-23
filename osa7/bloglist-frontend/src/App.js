@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
+import { createBlog, initBlogs, sortBlogs, likeBlog, deleteBlog } from './reducers/blogReducer';
+import { notify } from './reducers/notificationReducer';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -28,7 +31,7 @@ const LoginPage = (props) => <form onSubmit={props.loginFormAction}>
 // blogs page
 const LogoutButton = (setUser) => {
   const logout = () => {
-    window.localStorage.clear()
+    window.localStorage.clear();
     setUser(null);
   };
 
@@ -37,20 +40,15 @@ const LogoutButton = (setUser) => {
   </button>;
 };
 
-const formatAsBlog = (title, author, url, likes, user) => {
-  return {
+const formatAsBlog = (title, author, url, likes, user) => (
+  {
     title,
     author,
     url,
     likes,
     user,
   }
-};
-
-// return blogs sorted by likes in descending order
-const sortBlogs = (blogs) => blogs.sort(
-  (a, b) => b.likes - a.likes
-)
+);
 
 const Notification = (notification) => {
   return (
@@ -64,7 +62,8 @@ const App = () => {
   // localStorage.clear()
 
   // useSelector hook functions as a subscriber
-  const notification = useSelector((state) => state.notification);
+  // const notification = useSelector((state) => state.notification);
+  const dispatch = useDispatch();
 
   // login
   const [usernameHolder, setUsername] = useState('');
@@ -88,8 +87,8 @@ const App = () => {
     window.localStorage.setItem('user', JSON.stringify(loggedUser));
 
     // set token for session
-    blogService.setToken(loggedUser.token)
-  }
+    blogService.setToken(loggedUser.token);
+  };
 
   const LoginPagePage = () => <LoginPage
     loginFormAction={loginSubmit}
@@ -103,18 +102,14 @@ const App = () => {
   useEffect(() => {
     const sessionUser = JSON.parse(window.localStorage.getItem('user'));
     if (sessionUser) {
-      setUser(sessionUser)
+      setUser(sessionUser);
       blogService.setToken(sessionUser.token);
     }
-  }, [])
+  }, []);
 
   // BLOGS ---------------------------------------------
-  const [blogs, setBlogs] = useState([]);
-
-  useEffect(() => {
-    console.log('use effect')
-    blogService.getAll().then((response) => setBlogs(sortBlogs(response)));
-    console.log('blogs at UE:', blogs)
+  useEffect(async () => {
+    dispatch(await initBlogs());
   }, [user]);
 
   // BLOG FORM --------------------------------------------
@@ -126,45 +121,37 @@ const App = () => {
   const urlHandler = (charEvent) => setUrl(charEvent.target.value);
   const [showForm, setShowForm] = useState(false);
 
-  // blog form submission handler
-  const blogSubmit = async () => {
-    // backend
-    const newBlog = await blogService.create(formatAsBlog(blogName, author, url));
-    // frontend
-    setShowForm(false);
-    setBlogs(blogs.concat(newBlog));
-  };
-
-  const likeBlog = (blog, setBlogs, blogs) => {
-    const newBlog = blog;
-    newBlog.likes += 1;
-    // remove old blog data
-    const updatedBlogs = blogs.filter((elem) => elem.id !== blog.id)
-    setBlogs(sortBlogs(updatedBlogs.concat(newBlog)));
-    // update new to back
-    blogService.update(newBlog);
-  };
-
-  const removeBlog = (id, setBlogs, blogs) => {
-    // remove blog frontend
-    setBlogs(blogs.filter((elem) => elem.id !== id))
-    // remove backend
-    blogService.remove(id)
-  };
-
   const removeButton = (id) => <button
-    onClick={() => removeBlog(id, setBlogs, blogs)}>
+    onClick={() => dispatch(deleteBlog(id))}>
     remove
     </button>;
 
-  const Blogs = (blogs) => <div>
-    {console.log('blogs to render', blogs)}
-    {blogs.map(blog => <div key={blog.id}>
-      <Blog blog={blog} like_handler={() => likeBlog(blog, setBlogs, blogs)} />
-      {user.username === blog.user.username ? removeButton(blog.id) : null}
-    </div>
-    )}
-  </div>;
+  const handleLike = (blog, timeoutID) => {
+    clearTimeout(timeoutID);
+    dispatch(likeBlog(blog));
+    dispatch(notify(`You like ${blog.title}`));
+  };
+
+  const Blogs = () => {
+    const blogs = useSelector((state) => state.blogs);
+    const timeoutID = useSelector((state) => state.notification.timeoutID);
+    let blogsElement;
+    if (blogs) {
+      blogsElement = blogs.map((blog) => <div key={blog.id}>
+        <Blog blog={blog} likeHandler={() => handleLike(blog, timeoutID)} />
+        {user.username === blog.user.username ? removeButton(blog.id) : null} </div>);
+    }
+    return (
+      <div>
+        {blogsElement}
+      </div>
+    );
+  };
+
+  const blogSubmit = () => {
+    dispatch(createBlog(formatAsBlog(blogName, author, url, 0, user)));
+    setShowForm(false);
+  };
 
   const DisplayBlogForm = () => {
     if (showForm) {
@@ -181,26 +168,35 @@ const App = () => {
           />
           <button onClick={() => setShowForm(false)}>cancel</button>
         </div>
-      )
+      );
     }
-
+    // else
     return <button onClick={() => setShowForm(true)}>new note</button>;
   };
 
+  // refactor Blogs out so its hooks are on the top level
   const BlogPage = () => <div>
     <h2>blogs</h2>
+    {useSelector((state) => state.notification.notification)}
     {`${user.name} logged in`}
     {LogoutButton(setUser)}
     <h2>create new</h2>
     {DisplayBlogForm()}
-    {Blogs(blogs, likeBlog)}
   </div>;
 
   return (
-    <div>
-      {user ? BlogPage() : LoginPagePage()}
-    </div>
-  )
+    <BrowserRouter>
+      <Switch>
+        <Route path='/login'>
+          {user ? <Redirect to='/' /> : LoginPagePage()}
+        </Route>
+        <Route path='/'>
+          {user ? <BlogPage /> : <Redirect to='/login' />}
+          {<Blogs />}
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  );
 };
 
 export default App;

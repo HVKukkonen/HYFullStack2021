@@ -1,11 +1,11 @@
 // ACTION CREATORS ---------------------------------------------
-export const removeNotification = () => (
+const removeNotification = () => (
   {
     type: 'NOTIFICATION-REMOVE',
   }
 );
 
-export const setNotification = (notification, timeoutID) => (
+const setNotification = (notification, timeoutID) => (
   {
     type: 'NOTIFICATION-CREATE',
     data: {
@@ -14,6 +14,14 @@ export const setNotification = (notification, timeoutID) => (
     },
   }
 );
+
+export const notify = (notification) => (dispatch) => {
+  const timeoutID = setTimeout(
+    () => dispatch(removeNotification()),
+    3000,
+  );
+  dispatch(setNotification(notification, timeoutID));
+};
 
 // HELPERS -----------------------------------------------------
 // produces a state object of correct form

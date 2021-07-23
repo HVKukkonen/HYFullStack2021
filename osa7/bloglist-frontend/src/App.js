@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Blog from './components/Blog';
+import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
 import { createBlog, initBlogs, sortBlogs, likeBlog, deleteBlog } from './reducers/blogReducer';
 import { notify } from './reducers/notificationReducer';
@@ -50,13 +51,9 @@ const formatAsBlog = (title, author, url, likes, user) => (
   }
 );
 
-const Notification = (notification) => {
-  return (
-    <div>
-      {notification}
-    </div>
-  );
-};
+const Notification = (notification) => <div>
+  {notification}
+</div>;
 
 const App = () => {
   // localStorage.clear()
@@ -121,33 +118,6 @@ const App = () => {
   const urlHandler = (charEvent) => setUrl(charEvent.target.value);
   const [showForm, setShowForm] = useState(false);
 
-  const removeButton = (id) => <button
-    onClick={() => dispatch(deleteBlog(id))}>
-    remove
-    </button>;
-
-  const handleLike = (blog, timeoutID) => {
-    clearTimeout(timeoutID);
-    dispatch(likeBlog(blog));
-    dispatch(notify(`You like ${blog.title}`));
-  };
-
-  const Blogs = () => {
-    const blogs = useSelector((state) => state.blogs);
-    const timeoutID = useSelector((state) => state.notification.timeoutID);
-    let blogsElement;
-    if (blogs) {
-      blogsElement = blogs.map((blog) => <div key={blog.id}>
-        <Blog blog={blog} likeHandler={() => handleLike(blog, timeoutID)} />
-        {user.username === blog.user.username ? removeButton(blog.id) : null} </div>);
-    }
-    return (
-      <div>
-        {blogsElement}
-      </div>
-    );
-  };
-
   const blogSubmit = () => {
     dispatch(createBlog(formatAsBlog(blogName, author, url, 0, user)));
     setShowForm(false);
@@ -174,7 +144,6 @@ const App = () => {
     return <button onClick={() => setShowForm(true)}>new note</button>;
   };
 
-  // refactor Blogs out so its hooks are on the top level
   const BlogPage = () => <div>
     <h2>blogs</h2>
     {useSelector((state) => state.notification.notification)}
@@ -192,7 +161,7 @@ const App = () => {
         </Route>
         <Route path='/'>
           {user ? <BlogPage /> : <Redirect to='/login' />}
-          {<Blogs />}
+          <Blogs user={user} />
         </Route>
       </Switch>
     </BrowserRouter>

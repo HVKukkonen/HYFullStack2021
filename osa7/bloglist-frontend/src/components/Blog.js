@@ -6,9 +6,7 @@ const Blog = ({ blog, likeHandler }) => {
   let output;
   const [show, setShow] = useState(false);
   const showButton = <button onClick={() => setShow(!show)}>{(show) ? 'hide' : 'show'}</button>;
-  const likeButton = () => {
-    return (<button onClick={() => likeHandler()}>like</button>);
-  };
+  const likeButton = () => <button onClick={() => likeHandler()}>like</button>;
 
   if (show) {
     output = <div id='blog-element'>

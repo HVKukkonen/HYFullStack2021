@@ -34,7 +34,9 @@ export const initBlogs = async () => {
 
 export const likeBlog = (blog) => async (dispatch) => {
   blog.likes += 1;
+  console.log('blog at likeblog', blog);
   const updated = await blogService.update(blog);
+  console.log('updated at likeblog', updated);
   dispatch({
     type: 'BLOG-UPDATE',
     data: { blog: updated },

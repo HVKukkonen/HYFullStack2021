@@ -27,7 +27,7 @@ const LoginPage = (props) => <form onSubmit={props.loginFormAction}>
   <button type='submit'>
     login
   </button>
-</form>
+</form>;
 
 // blogs page
 const LogoutButton = (setUser) => {

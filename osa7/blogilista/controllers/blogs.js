@@ -85,9 +85,10 @@ blogsRouter.put('/:id', async (request, response, next) => {
   // delete blog._id;
 
   try {
-    const updated = await Blog.findByIdAndUpdate(
-      request.params.id, blog, { new: true, omitUndefined: true },
-    );
+    const updated = await Blog
+      .findByIdAndUpdate(request.params.id, blog, { new: true, omitUndefined: true })
+      // populate the user id linked to blog with the corresponding user object from users
+      .populate('user');
     response.json(updated).status(204).end();
   } catch (exception) {
     next(exception);

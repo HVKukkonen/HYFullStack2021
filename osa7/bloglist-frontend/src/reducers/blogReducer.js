@@ -7,26 +7,26 @@ export const sortBlogs = (blogs) => blogs.sort(
 );
 
 // ACTION CREATORS ----------------------------------------------------
-export const createBlog = async (blog) => {
+export const createBlog = (blog) => async (dispatch) => {
   // backend
   const newBlog = await blogService.create(blog);
   // redux store
-  return (
+  dispatch(
     {
       type: 'BLOG-CREATE',
       data: { blog: newBlog },
-    }
+    },
   );
 };
 
-export const initBlogs = async () => {
+export const initBlogs = () => async (dispatch) => {
   let blogs = await blogService.getAll();
   blogs = sortBlogs(blogs);
-  return (
+  dispatch(
     {
       type: 'BLOG-INIT',
       data: { blogs },
-    }
+    },
   );
 };
 

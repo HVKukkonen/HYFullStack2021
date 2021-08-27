@@ -3,6 +3,8 @@ import blogService from '../services/blogs';
 
 // ACTION CREATORS -------------------------------------------------------
 export const loginUser = (username, password) => async (dispatch) => {
+  // redux-thunk middleware handles async API call operations
+  // ultimately dispatching only a pure object
   const loggedUser = await loginService.login({
     username,
     password,

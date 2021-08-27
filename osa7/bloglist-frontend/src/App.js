@@ -29,6 +29,7 @@ const Notification = (notification) => <div>
 
 const App = () => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   // login
   const [usernameHolder, setUsername] = useState('');
@@ -67,7 +68,7 @@ const App = () => {
   const blogSubmit = (event) => {
     event.preventDefault();
     dispatch(
-      createBlog(formatAsBlog(blogName, author, url, 0, useSelector((state) => state.user))),
+      createBlog(formatAsBlog(blogName, author, url, 0, user)),
     );
     setShowForm(false);
   };

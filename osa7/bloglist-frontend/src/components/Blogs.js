@@ -23,8 +23,6 @@ const Blogs = ({ user }) => {
   if (blogs) {
     blogsElement = blogs.map((blog) => <div key={blog.id}>
       <Blog blog={blog} likeHandler={() => handleLike(blog, timeoutID)} />
-      {console.log('user username', user.username)}
-      {console.log('blog username', blog.user.username)}
       {user.username === blog.user.username ? removeButton(blog.id) : null} </div>);
   }
   return (

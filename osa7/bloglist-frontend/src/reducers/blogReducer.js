@@ -1,5 +1,4 @@
 import blogService from '../services/blogs';
-import { removeNotification, setNotification } from './notificationReducer';
 
 // HELPERS ---------------------------------------
 // return blogs sorted by likes in descending order
@@ -22,7 +21,6 @@ export const createBlog = async (blog) => {
 
 export const initBlogs = async () => {
   let blogs = await blogService.getAll();
-  // console.log('blogs at reducer init:', blogs);
   blogs = sortBlogs(blogs);
   return (
     {
@@ -34,9 +32,7 @@ export const initBlogs = async () => {
 
 export const likeBlog = (blog) => async (dispatch) => {
   blog.likes += 1;
-  console.log('blog at likeblog', blog);
   const updated = await blogService.update(blog);
-  console.log('updated at likeblog', updated);
   dispatch({
     type: 'BLOG-UPDATE',
     data: { blog: updated },

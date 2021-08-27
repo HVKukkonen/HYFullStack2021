@@ -5,41 +5,13 @@ import Blog from './components/Blog';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
 import { createBlog, initBlogs, sortBlogs, likeBlog, deleteBlog } from './reducers/blogReducer';
+import { continueSession, loginUser, logout } from './reducers/userReducer';
 import { notify } from './reducers/notificationReducer';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import LoginPage from './components/LoginPage';
 
-const LoginPage = (props) => <form onSubmit={props.loginFormAction}>
-  <h1>log in to application</h1>
-  <br />
-  username:
-  <input
-    value={props.usernameHolder}
-    onChange={props.usernameHandler}
-  />
-  <br />
-  password:
-  <input
-    value={props.passwordHolder}
-    onChange={props.passwordHandler}
-  />
-  <br />
-  <button type='submit'>
-    login
-  </button>
-</form>;
-
-// blogs page
-const LogoutButton = (setUser) => {
-  const logout = () => {
-    window.localStorage.clear();
-    setUser(null);
-  };
-
-  return <button
-    onClick={() => logout()}>log out
-  </button>;
-};
+const LogoutButton = (props) => <button onClick={() => props.dispatch(logout())}>log out</button>;
 
 const formatAsBlog = (title, author, url, likes, user) => (
   {
@@ -56,10 +28,6 @@ const Notification = (notification) => <div>
 </div>;
 
 const App = () => {
-  // localStorage.clear()
-
-  // useSelector hook functions as a subscriber
-  // const notification = useSelector((state) => state.notification);
   const dispatch = useDispatch();
 
   // login
@@ -68,46 +36,24 @@ const App = () => {
   const [passwordHolder, setPassword] = useState('');
   const passwordHandler = (charEvent) => setPassword(charEvent.target.value);
 
-  // logged user
-  const [user, setUser] = useState();
-
   const loginSubmit = async (event) => {
     event.preventDefault();
-
-    const loggedUser = await loginService.login({
-      username: usernameHolder,
-      password: passwordHolder,
-    });
-
     // set user with token as user
-    setUser(loggedUser);
-    window.localStorage.setItem('user', JSON.stringify(loggedUser));
-
-    // set token for session
-    blogService.setToken(loggedUser.token);
+    dispatch(loginUser(usernameHolder, passwordHolder));
   };
-
-  const LoginPagePage = () => <LoginPage
-    loginFormAction={loginSubmit}
-    usernameHolder={usernameHolder}
-    usernameHandler={usernameHandler}
-    passwordHolder={passwordHolder}
-    passwordHandler={passwordHandler}
-  />;
 
   // fetch user from valid session
   useEffect(() => {
     const sessionUser = JSON.parse(window.localStorage.getItem('user'));
     if (sessionUser) {
-      setUser(sessionUser);
-      blogService.setToken(sessionUser.token);
+      continueSession(sessionUser);
     }
   }, []);
 
   // BLOGS ---------------------------------------------
   useEffect(async () => {
     dispatch(await initBlogs());
-  }, [user]);
+  }, [useSelector((state) => state.user)]);
 
   // BLOG FORM --------------------------------------------
   const [blogName, setBlogName] = useState('');
@@ -118,16 +64,20 @@ const App = () => {
   const urlHandler = (charEvent) => setUrl(charEvent.target.value);
   const [showForm, setShowForm] = useState(false);
 
-  const blogSubmit = () => {
-    dispatch(createBlog(formatAsBlog(blogName, author, url, 0, user)));
+  const blogSubmit = (event) => {
+    event.preventDefault();
+    dispatch(
+      createBlog(formatAsBlog(blogName, author, url, 0, useSelector((state) => state.user))),
+    );
     setShowForm(false);
   };
 
   const DisplayBlogForm = () => {
     if (showForm) {
       return (
-        <div>
+        <div key='blogformcontainer'>
           <BlogForm
+            key='blogform'
             blogSubmit={blogSubmit}
             blogName={blogName}
             blogNameHandler={blogNameHandler}
@@ -144,24 +94,30 @@ const App = () => {
     return <button onClick={() => setShowForm(true)}>new note</button>;
   };
 
-  const BlogPage = () => <div>
+  const BlogPage = () => <div key='blogpage'>
     <h2>blogs</h2>
     {useSelector((state) => state.notification.notification)}
-    {`${user.name} logged in`}
-    {LogoutButton(setUser)}
+    {`${useSelector((state) => state.user.username)} logged in`}
+    <LogoutButton dispatch={dispatch}/>
     <h2>create new</h2>
-    {DisplayBlogForm()}
+    <DisplayBlogForm />
   </div>;
 
   return (
     <BrowserRouter>
       <Switch>
         <Route path='/login'>
-          {user ? <Redirect to='/' /> : LoginPagePage()}
+          {useSelector((state) => state.user).username ? <Redirect to='/' /> : <LoginPage
+            loginFormAction={loginSubmit}
+            usernameHolder={usernameHolder}
+            usernameHandler={usernameHandler}
+            passwordHolder={passwordHolder}
+            passwordHandler={passwordHandler}
+          />}
         </Route>
         <Route path='/'>
-          {user ? <BlogPage /> : <Redirect to='/login' />}
-          <Blogs user={user} />
+          {useSelector((state) => state.user).username ? <BlogPage /> : <Redirect to='/login' />}
+          <Blogs user={ useSelector((state) => state.user) } />
         </Route>
       </Switch>
     </BrowserRouter>

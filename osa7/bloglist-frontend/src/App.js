@@ -47,7 +47,7 @@ const App = () => {
   useEffect(() => {
     const sessionUser = JSON.parse(window.localStorage.getItem('user'));
     if (sessionUser) {
-      continueSession(sessionUser);
+      dispatch(continueSession(sessionUser));
     }
   }, []);
 

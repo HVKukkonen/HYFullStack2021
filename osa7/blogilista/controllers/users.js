@@ -24,4 +24,13 @@ userRouter.post('/', async (request, response, next) => {
   }
 });
 
+userRouter.delete('/', async (request, response, next) => {
+  try {
+    await User.deleteMany({});
+    response.status(200).end();
+  } catch (exception) {
+    next(exception);
+  }
+});
+
 module.exports = userRouter;

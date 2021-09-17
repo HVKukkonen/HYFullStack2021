@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory, useRouteMatch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Blog from './components/Blog';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
 import { createBlog, initBlogs, sortBlogs, likeBlog, deleteBlog } from './reducers/blogReducer';
-import { continueSession, loginUser, logout } from './reducers/userReducer';
+import { continueSession, loginUser } from './reducers/userReducer';
 import { notify } from './reducers/notificationReducer';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import LoginPage from './components/LoginPage';
-
-const LogoutButton = (props) => <button onClick={() => props.dispatch(logout())}>log out</button>;
+import UserPage from './components/UserPage';
+import Header from './components/Header';
+import AllUsersPage from './components/AllUsersPage';
+import { initUsers } from './reducers/summaryReducer';
 
 const formatAsBlog = (title, author, url, likes, user) => (
   {
@@ -30,6 +32,9 @@ const Notification = (notification) => <div>
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const allUsers = useSelector((state) => state.allUsers);
+  const notification = useSelector((state) => state.notification.notification);
+  // const history = useHistory();
 
   // login
   const [usernameHolder, setUsername] = useState('');
@@ -51,10 +56,11 @@ const App = () => {
     }
   }, []);
 
-  // BLOGS ---------------------------------------------
-  useEffect(async () => {
-    dispatch(await initBlogs());
-  }, [useSelector((state) => state.user)]);
+  // fetch list of blogs for the user and a list of all users
+  useEffect(() => {
+    dispatch(initBlogs());
+    dispatch(initUsers());
+  }, [user]);
 
   // BLOG FORM --------------------------------------------
   const [blogName, setBlogName] = useState('');
@@ -77,6 +83,7 @@ const App = () => {
     if (showForm) {
       return (
         <div key='blogformcontainer'>
+          <h2>create new</h2>
           <BlogForm
             key='blogform'
             blogSubmit={blogSubmit}
@@ -92,36 +99,66 @@ const App = () => {
       );
     }
     // else
-    return <button onClick={() => setShowForm(true)}>new note</button>;
+    return (
+      <div>
+        <h2>create new</h2>
+        <button onClick={() => setShowForm(true)}>new note</button>
+      </div>
+    );
   };
 
-  const BlogPage = () => <div key='blogpage'>
-    <h2>blogs</h2>
-    {useSelector((state) => state.notification.notification)}
-    {`${useSelector((state) => state.user.username)} logged in`}
-    <LogoutButton dispatch={dispatch}/>
-    <h2>create new</h2>
-    <DisplayBlogForm />
-  </div>;
+  const testUser = {
+    username: 'tester',
+    blogs: ['blog1', 'blog2'],
+    id: 'djflgkehs',
+  };
+
+  const testUser2 = {
+    username: 'tester2',
+    blogs: ['blogA', 'blogB'],
+    id: 'sgfhghh',
+  };
+
+  const testUsersList = [testUser, testUser2];
+
+  if (!user.username) {
+    return (
+      <LoginPage
+        loginFormAction={loginSubmit}
+        usernameHolder={usernameHolder}
+        usernameHandler={usernameHandler}
+        passwordHolder={passwordHolder}
+        passwordHandler={passwordHandler}
+      />
+    );
+  }
+
+  // find user matching id for displaying user page
+  const match = useRouteMatch('/users/:id');
+  const matchingUser = (match)
+    ? allUsers.find((userElem) => userElem.id === match.params.id)
+    : null;
 
   return (
-    <BrowserRouter>
+    <>
+      <Header
+        notification={notification}
+        username={user.username}
+        dispatch={dispatch}
+      />
       <Switch>
-        <Route path='/login'>
-          {useSelector((state) => state.user).username ? <Redirect to='/' /> : <LoginPage
-            loginFormAction={loginSubmit}
-            usernameHolder={usernameHolder}
-            usernameHandler={usernameHandler}
-            passwordHolder={passwordHolder}
-            passwordHandler={passwordHandler}
-          />}
+        <Route path='/users/:id'>
+          <UserPage user={matchingUser} />
+        </Route>
+        <Route path='/users'>
+          <AllUsersPage users={allUsers} />
         </Route>
         <Route path='/'>
-          {useSelector((state) => state.user).username ? <BlogPage /> : <Redirect to='/login' />}
-          <Blogs user={ useSelector((state) => state.user) } />
+          <DisplayBlogForm />
+          <Blogs user={user} />
         </Route>
       </Switch>
-    </BrowserRouter>
+    </>
   );
 };
 

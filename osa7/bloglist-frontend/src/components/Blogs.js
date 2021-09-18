@@ -3,7 +3,7 @@ import Blog from './Blog';
 import { likeBlog, deleteBlog } from '../reducers/blogReducer';
 import { notify } from '../reducers/notificationReducer';
 
-const Blogs = ({ user }) => {
+const Blogs = (props) => {
   const dispatch = useDispatch();
 
   const removeButton = (id) => <button
@@ -17,13 +17,12 @@ const Blogs = ({ user }) => {
     dispatch(notify(`You like ${blog.title}`));
   };
 
-  const blogs = useSelector((state) => state.blogs);
   const timeoutID = useSelector((state) => state.notification.timeoutID);
   let blogsElement;
-  if (blogs) {
-    blogsElement = blogs.map((blog) => <div key={blog.id}>
+  if (props.blogs) {
+    blogsElement = props.blogs.map((blog) => <div key={blog.id}>
       <Blog blog={blog} likeHandler={() => handleLike(blog, timeoutID)} />
-      {user.username === blog.user.username ? removeButton(blog.id) : null} </div>);
+      {props.user.username === blog.user.username ? removeButton(blog.id) : null} </div>);
   }
   return (
     <div>

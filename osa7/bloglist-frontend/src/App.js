@@ -34,6 +34,7 @@ const App = () => {
   const user = useSelector((state) => state.user);
   const allUsers = useSelector((state) => state.allUsers);
   const notification = useSelector((state) => state.notification.notification);
+  const blogs = useSelector((state) => state.blogs);
   // const history = useHistory();
 
   // login
@@ -121,6 +122,17 @@ const App = () => {
 
   const testUsersList = [testUser, testUser2];
 
+  // find user matching id for displaying user page
+  const match = useRouteMatch('/users/:id');
+  const matchingUser = (match)
+    ? allUsers.find((userElem) => userElem.id === match.params.id)
+    : null;
+  const matchingBlogs = (match)
+    ? blogs.filter((blog) => blog.user.id === match.params.id)
+    : null;
+
+  console.log('blogs at start', blogs);
+
   if (!user.username) {
     return (
       <LoginPage
@@ -133,12 +145,6 @@ const App = () => {
     );
   }
 
-  // find user matching id for displaying user page
-  const match = useRouteMatch('/users/:id');
-  const matchingUser = (match)
-    ? allUsers.find((userElem) => userElem.id === match.params.id)
-    : null;
-
   return (
     <>
       <Header
@@ -148,14 +154,14 @@ const App = () => {
       />
       <Switch>
         <Route path='/users/:id'>
-          <UserPage user={matchingUser} />
+          <UserPage user={matchingUser} blogs={matchingBlogs}/>
         </Route>
         <Route path='/users'>
-          <AllUsersPage users={allUsers} />
+          <AllUsersPage users={allUsers} blogs={blogs} />
         </Route>
         <Route path='/'>
           <DisplayBlogForm />
-          <Blogs user={user} />
+          <Blogs user={user} blogs={blogs}/>
         </Route>
       </Switch>
     </>

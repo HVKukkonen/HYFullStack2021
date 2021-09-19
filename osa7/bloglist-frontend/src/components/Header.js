@@ -5,7 +5,9 @@ const LogoutButton = (props) => <button onClick={() => props.dispatch(logout())}
 const Header = (props) => <div>
     <h2>blogs</h2>
     {props.notification}
+    <br/>
     {`${props.username} logged in`}
+    <br/>
     <LogoutButton dispatch={props.dispatch}/>
   </div>;
 

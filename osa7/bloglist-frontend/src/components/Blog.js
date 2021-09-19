@@ -1,24 +1,13 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { removeNotification, setNotification } from '../reducers/notificationReducer';
-
 const Blog = ({ blog, likeHandler }) => {
-  let output;
-  const [show, setShow] = useState(false);
-  const showButton = <button onClick={() => setShow(!show)}>{(show) ? 'hide' : 'show'}</button>;
   const likeButton = () => <button onClick={() => likeHandler()}>like</button>;
 
-  if (show) {
-    output = <div id='blog-element'>
-    {blog.title} {blog.author} {blog.url} {blog.likes}
-    {showButton}
+  if (!blog) { return (null); }
+
+  const output = <div id='blog-element'>
+    <h2>{blog.title} - {blog.author}</h2>
+    {blog.url} {blog.likes}
     {likeButton()}
-    </div>;
-  } else {
-    output = <div id='blog-element'>
-      {blog.title} {blog.author} {showButton}
-    </div>;
-  }
+  </div>;
 
   return output;
 };

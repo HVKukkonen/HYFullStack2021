@@ -35,7 +35,14 @@ const App = () => {
   const allUsers = useSelector((state) => state.allUsers);
   const notification = useSelector((state) => state.notification.notification);
   const blogs = useSelector((state) => state.blogs);
+  const timeoutID = useSelector((state) => state.notification.timeoutID);
   // const history = useHistory();
+
+  const handleLike = (blog, timeoutID) => {
+    clearTimeout(timeoutID);
+    dispatch(likeBlog(blog));
+    dispatch(notify(`You like ${blog.title}`));
+  };
 
   // login
   const [usernameHolder, setUsername] = useState('');
@@ -108,20 +115,6 @@ const App = () => {
     );
   };
 
-  const testUser = {
-    username: 'tester',
-    blogs: ['blog1', 'blog2'],
-    id: 'djflgkehs',
-  };
-
-  const testUser2 = {
-    username: 'tester2',
-    blogs: ['blogA', 'blogB'],
-    id: 'sgfhghh',
-  };
-
-  const testUsersList = [testUser, testUser2];
-
   // find user matching id for displaying user page
   const match = useRouteMatch('/users/:id');
   const matchingUser = (match)
@@ -131,7 +124,10 @@ const App = () => {
     ? blogs.filter((blog) => blog.user.id === match.params.id)
     : null;
 
-  console.log('blogs at start', blogs);
+  const matchBlog = useRouteMatch('/blogs/:id');
+  const matchingSingleBlog = (matchBlog)
+    ? blogs.find((blog) => blog.id === matchBlog.params.id)
+    : null;
 
   if (!user.username) {
     return (
@@ -158,6 +154,12 @@ const App = () => {
         </Route>
         <Route path='/users'>
           <AllUsersPage users={allUsers} blogs={blogs} />
+        </Route>
+        <Route path='/blogs/:id'>
+          <Blog
+            blog={matchingSingleBlog}
+            likeHandler={() => handleLike(matchingSingleBlog, timeoutID)}>
+          </Blog>
         </Route>
         <Route path='/'>
           <DisplayBlogForm />

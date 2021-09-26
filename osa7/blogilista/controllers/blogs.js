@@ -1,11 +1,7 @@
 // TITLE: controller for blogs routing
-const { response } = require('express');
 const jwt = require('jsonwebtoken');
 // create router object
 const blogsRouter = require('express').Router();
-// const { response } = require('express');
-// const { request } = require('../app');
-// import Blog from models
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
@@ -27,17 +23,12 @@ blogsRouter.post('/', async (request, response, next) => {
   const token = getTokenFrom(request);
   const decodedToken = jwt.verify(token, process.env.SECRET);
   if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'invalid' });
+    response.status(401).json({ error: 'invalid' });
   }
   const user = await User.findById(decodedToken.id);
 
   const blog = new Blog(request.body);
   blog.user = user;
-
-  // link an arbitrary user's id to input blog
-  // blog.user = User.findOne({}).id;
-  // console.log('blog at post', blog);
-  // console.log('user at post', User.find({}));
 
   // insert 0 for non-existing likes
   if (!blog.likes) { blog.likes = 0; }
@@ -47,7 +38,6 @@ blogsRouter.post('/', async (request, response, next) => {
     const savedBlog = await blog.save();
     response.status(201).json(savedBlog);
   } catch (exception) {
-    // console.log('following error catched at post', exception.name);
     next(exception);
   }
 });
@@ -93,17 +83,15 @@ blogsRouter.put('/:id', async (request, response, next) => {
 
 blogsRouter.post('/:id/comments', async (request, response, next) => {
   const { id } = request.params;
-  console.log('id at back', id);
   const updated = await Blog.findById(id);
-  console.log('blog to up at back', updated);
-  console.log('req', request);
+
   // alter between updating an existing list and creating the first comment
   if (updated.comments) {
-    updated.comments = updated.comments.concat(request.body);
+    updated.comments = updated.comments.concat(request.body.comment);
   } else {
-    updated.comments = [request.comment];
+    updated.comments = [request.body.comment];
   }
-  console.log('blog after up at back', updated);
+
   try {
     await Blog.findByIdAndUpdate(id, updated);
     response.json(updated).status(204).end();

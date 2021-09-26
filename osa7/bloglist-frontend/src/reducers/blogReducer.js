@@ -47,6 +47,16 @@ export const deleteBlog = (id) => {
   });
 };
 
+export const commentBlog = (comment, id) => async (dispatch) => {
+  console.log('comment disp', comment);
+  const updated = await blogService.comment(comment, id);
+  console.log('resp at action creat', updated);
+  dispatch({
+    type: 'BLOG-COMMENT',
+    data: { blog: updated },
+  });
+};
+
 // REDUCER
 const blogReducer = (state = [], action) => {
   switch (action.type) {
@@ -61,6 +71,10 @@ const blogReducer = (state = [], action) => {
     }
     case 'BLOG-DELETE':
       return state.filter((blog) => blog.id !== action.data.id);
+    case 'BLOG-COMMENT': {
+      const updated = action.data.blog;
+      return state.filter((blog) => blog.id !== updated.id).concat(updated);
+    }
     default:
       return state;
   }

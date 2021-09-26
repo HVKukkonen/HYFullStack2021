@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Blog from './components/Blog';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
-import { createBlog, initBlogs, sortBlogs, likeBlog, deleteBlog } from './reducers/blogReducer';
+import { createBlog, initBlogs, likeBlog } from './reducers/blogReducer';
 import { continueSession, loginUser } from './reducers/userReducer';
 import { notify } from './reducers/notificationReducer';
 import blogService from './services/blogs';

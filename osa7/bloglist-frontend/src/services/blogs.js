@@ -30,6 +30,12 @@ const update = async (blog) => {
 
 const remove = (id) => axios.delete(`${baseUrl}/${id}`);
 
+const comment = (com, id) => {
+  console.log('com at axios services', com);
+  console.log('id at axios services', id);
+  axios.post(`${baseUrl}/${id}/comments`, com);
+};
+
 export default {
-  getAll, create, setToken, update, remove,
+  getAll, create, setToken, update, remove, comment,
 };

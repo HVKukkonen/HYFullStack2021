@@ -1,5 +1,5 @@
 // TITLE: controller for blogs routing
-
+const { response } = require('express');
 const jwt = require('jsonwebtoken');
 // create router object
 const blogsRouter = require('express').Router();
@@ -80,16 +80,44 @@ blogsRouter.put('/:id', async (request, response, next) => {
     user: request.body.user.id,
   };
 
-  // const blog = Blog(request.body);
-  // // dont overwrite existing mongoose id
-  // delete blog._id;
-
   try {
     const updated = await Blog
       .findByIdAndUpdate(request.params.id, blog, { new: true, omitUndefined: true })
       // populate the user id linked to blog with the corresponding user object from users
       .populate('user');
     response.json(updated).status(204).end();
+  } catch (exception) {
+    next(exception);
+  }
+});
+
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  const { id } = request.params;
+  console.log('id at back', id);
+  const updated = await Blog.findById(id);
+  console.log('blog to up at back', updated);
+  console.log('req', request);
+  // alter between updating an existing list and creating the first comment
+  if (updated.comments) {
+    updated.comments = updated.comments.concat(request.body);
+  } else {
+    updated.comments = [request.comment];
+  }
+  console.log('blog after up at back', updated);
+  try {
+    await Blog.findByIdAndUpdate(id, updated);
+    response.json(updated).status(204).end();
+  } catch (exception) {
+    next(exception);
+  }
+});
+
+// delete all comments of a blog
+blogsRouter.delete('/:id/comments', async (request, response, next) => {
+  try {
+    await Blog
+      .findByIdAndUpdate(request.params.id, { comments: [] }, { new: true, omitUndefined: true });
+    response.status(204).end();
   } catch (exception) {
     next(exception);
   }

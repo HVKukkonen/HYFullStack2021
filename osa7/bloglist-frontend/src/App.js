@@ -17,16 +17,6 @@ import Header from './components/Header';
 import AllUsersPage from './components/AllUsersPage';
 import { initUsers } from './reducers/summaryReducer';
 
-const formatAsBlog = (title, author, url, likes, user) => (
-  {
-    title,
-    author,
-    url,
-    likes,
-    user,
-  }
-);
-
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -60,21 +50,7 @@ const App = () => {
   }, [user]);
 
   // BLOG FORM --------------------------------------------
-  const [blogName, setBlogName] = useState('');
-  const blogNameHandler = (charEvent) => setBlogName(charEvent.target.value);
-  const [author, setAuthor] = useState('');
-  const authorHandler = (charEvent) => setAuthor(charEvent.target.value);
-  const [url, setUrl] = useState('');
-  const urlHandler = (charEvent) => setUrl(charEvent.target.value);
   const [showForm, setShowForm] = useState(false);
-
-  const blogSubmit = (event) => {
-    event.preventDefault();
-    dispatch(
-      createBlog(formatAsBlog(blogName, author, url, 0, user)),
-    );
-    setShowForm(false);
-  };
 
   const DisplayBlogForm = () => {
     if (showForm) {
@@ -83,13 +59,8 @@ const App = () => {
           <h2>create new</h2>
           <BlogForm
             key='blogform'
-            blogSubmit={blogSubmit}
-            blogName={blogName}
-            blogNameHandler={blogNameHandler}
-            author={author}
-            authorHandler={authorHandler}
-            url={url}
-            urlHandler={urlHandler}
+            user={user}
+            setShowForm={setShowForm}
           />
           <button onClick={() => setShowForm(false)}>cancel</button>
         </div>

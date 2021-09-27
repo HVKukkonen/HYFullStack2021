@@ -34,37 +34,62 @@ const BlogForm = (props) => {
   const dispatch = useDispatch();
 
   return <form
-  onSubmit={(e) => blogSubmit(e, dispatch, blog, props.setShowForm)}>
-  title:
-  <input
-    id='blogform-title'
-    value={blogName}
-    onChange={blogNameHandler}
-  />
-  <br />
-  author:
-  <input
-    id='blogform-author'
-    value={author}
-    onChange={authorHandler}
-  />
-  <br />
-  url:
-  <input
-    id='blogform-url'
-    value={url}
-    onChange={urlHandler}
-  />
-  <br />
-  <button id='blogform-create' type='submit'>
-    create
-  </button>
-</form>;
+    onSubmit={(e) => blogSubmit(e, dispatch, blog, props.setShowForm)}>
+    title:
+    <input
+      id='blogform-title'
+      value={blogName}
+      onChange={blogNameHandler}
+    />
+    <br />
+    author:
+    <input
+      id='blogform-author'
+      value={author}
+      onChange={authorHandler}
+    />
+    <br />
+    url:
+    <input
+      id='blogform-url'
+      value={url}
+      onChange={urlHandler}
+    />
+    <br />
+    <button id='blogform-create' type='submit'>
+      create
+    </button>
+  </form>;
+};
+
+const HideableBlogForm = (props) => {
+  const [showForm, setShowForm] = useState(false);
+
+  if (showForm) {
+    return (
+      <div key='blogformcontainer'>
+        <h2>create new</h2>
+        <BlogForm
+          key='blogform'
+          user={props.user}
+          setShowForm={setShowForm}
+        />
+        <button onClick={() => setShowForm(false)}>cancel</button>
+      </div>
+    );
+  }
+  // else
+  return (
+    <div>
+      <h2>create new</h2>
+      <button onClick={() => setShowForm(true)}>new note</button>
+    </div>
+  );
 };
 
 BlogForm.propTypes = {
-  blogName: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
+  blogName: PropTypes.string,
+  author: PropTypes.string,
 };
 
-export default BlogForm;
+export default HideableBlogForm;

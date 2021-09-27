@@ -8,8 +8,8 @@ import {
 } from '@material-ui/core';
 import Blog from './components/Blog';
 import Blogs from './components/Blogs';
-import BlogForm from './components/BlogForm';
-import { createBlog, initBlogs } from './reducers/blogReducer';
+import HideableBlogForm from './components/BlogForm';
+import { initBlogs } from './reducers/blogReducer';
 import { continueSession, loginUser } from './reducers/userReducer';
 import LoginPage from './components/LoginPage';
 import UserPage from './components/UserPage';
@@ -48,32 +48,6 @@ const App = () => {
     dispatch(initBlogs());
     dispatch(initUsers());
   }, [user]);
-
-  // BLOG FORM --------------------------------------------
-  const [showForm, setShowForm] = useState(false);
-
-  const DisplayBlogForm = () => {
-    if (showForm) {
-      return (
-        <div key='blogformcontainer'>
-          <h2>create new</h2>
-          <BlogForm
-            key='blogform'
-            user={user}
-            setShowForm={setShowForm}
-          />
-          <button onClick={() => setShowForm(false)}>cancel</button>
-        </div>
-      );
-    }
-    // else
-    return (
-      <div>
-        <h2>create new</h2>
-        <button onClick={() => setShowForm(true)}>new note</button>
-      </div>
-    );
-  };
 
   // find user matching id for displaying user page
   const match = useRouteMatch('/users/:id');
@@ -115,7 +89,7 @@ const App = () => {
           <Blog blog={matchingSingleBlog} />
         </Route>
         <Route path='/'>
-          <DisplayBlogForm />
+          <HideableBlogForm />
           <Blogs user={user} blogs={blogs}/>
         </Route>
       </Switch>

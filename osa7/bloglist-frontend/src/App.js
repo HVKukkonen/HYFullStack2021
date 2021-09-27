@@ -9,9 +9,8 @@ import {
 import Blog from './components/Blog';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
-import { createBlog, initBlogs, likeBlog } from './reducers/blogReducer';
+import { createBlog, initBlogs } from './reducers/blogReducer';
 import { continueSession, loginUser } from './reducers/userReducer';
-import { notify } from './reducers/notificationReducer';
 import LoginPage from './components/LoginPage';
 import UserPage from './components/UserPage';
 import Header from './components/Header';
@@ -32,15 +31,7 @@ const App = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const allUsers = useSelector((state) => state.allUsers);
-  const notification = useSelector((state) => state.notification.notification);
   const blogs = useSelector((state) => state.blogs);
-  const timeoutID = useSelector((state) => state.notification.timeoutID);
-
-  const handleLike = (blog, toutID) => {
-    clearTimeout(toutID);
-    dispatch(likeBlog(blog));
-    dispatch(notify(`You like ${blog.title}`));
-  };
 
   // login
   const [usernameHolder, setUsername] = useState('');
@@ -141,11 +132,7 @@ const App = () => {
 
   return (
     <Container>
-      <Header
-        notification={notification}
-        username={user.username}
-        dispatch={dispatch}
-      />
+      <Header username={user.username} />
       <Switch>
         <Route path='/users/:id'>
           <UserPage user={matchingUser} blogs={matchingBlogs}/>
@@ -154,10 +141,7 @@ const App = () => {
           <AllUsersPage users={allUsers} blogs={blogs} />
         </Route>
         <Route path='/blogs/:id'>
-          <Blog
-            blog={matchingSingleBlog}
-            likeHandler={() => handleLike(matchingSingleBlog, timeoutID)}>
-          </Blog>
+          <Blog blog={matchingSingleBlog} />
         </Route>
         <Route path='/'>
           <DisplayBlogForm />

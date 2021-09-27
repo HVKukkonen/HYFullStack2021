@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { commentBlog } from '../reducers/blogReducer';
+import { React, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { commentBlog, likeBlog } from '../reducers/blogReducer';
+import { notify } from '../reducers/notificationReducer';
 
 const CommentForm = (props) => <form
   onSubmit={props.onSubmit}>
@@ -24,14 +25,23 @@ const handleSubmit = (event, setComment, dispatch, comment, id) => {
   dispatch(commentBlog(comment, id));
 };
 
-const Blog = ({ blog, likeHandler }) => {
-  const likeButton = () => <button onClick={() => likeHandler()}>like</button>;
+const handleLike = (blog, toutID, dispatch) => {
+  clearTimeout(toutID);
+  dispatch(likeBlog(blog));
+  dispatch(notify(`You like ${blog.title}`));
+};
+
+const Blog = ({ blog }) => {
+  const dispatch = useDispatch();
+  const timeoutID = useSelector((state) => state.notification.timeoutID);
+
+  const likeButton = () => <button
+    onClick={() => handleLike(blog, timeoutID, dispatch)}>like
+  </button>;
 
   // comment form state
   const [comment, setComment] = useState('');
   const commentHandler = (charEvent) => setComment(charEvent.target.value);
-
-  const dispatch = useDispatch();
 
   if (!blog) { return (null); }
 

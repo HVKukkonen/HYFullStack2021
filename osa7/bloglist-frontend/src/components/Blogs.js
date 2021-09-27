@@ -25,7 +25,7 @@ const Blogs = (props) => {
   );
 };
 
-Blogs.PropTypes = {
+Blogs.propTypes = {
   blogs: PropTypes.array,
 };
 

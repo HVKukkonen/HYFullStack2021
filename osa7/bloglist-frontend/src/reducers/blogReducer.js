@@ -48,9 +48,7 @@ export const deleteBlog = (id) => {
 };
 
 export const commentBlog = (comment, id) => async (dispatch) => {
-  console.log('comment disp', comment);
   const updated = await blogService.comment(comment, id);
-  console.log('resp at action creat', updated);
   dispatch({
     type: 'BLOG-COMMENT',
     data: { blog: updated },

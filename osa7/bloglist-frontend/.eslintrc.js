@@ -1,13 +1,16 @@
 module.exports = {
   env: {
-    "browser": true,
-    "es6": true,
-    "jest/globals": true,
-    "cypress/globals": true
+    browser: true,
+    es6: true,
+    'jest/globals': true,
+    'cypress/globals': true,
   },
-  extends: 'airbnb-base',
+  extends: [
+    'airbnb-base',
+    'plugin:react/recommended',
+  ],
   plugins: [
-    "react", "jest", "cypress"
+    'react', 'jest', 'cypress',
   ],
   rules: {
     // linebreaks not checked as I seem to be mixing crlf and lf

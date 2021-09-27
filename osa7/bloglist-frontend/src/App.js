@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Switch, Route, Redirect, useHistory, useRouteMatch } from 'react-router-dom';
+import {
+  Switch, Route, useRouteMatch,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  Container,
+} from '@material-ui/core';
 import Blog from './components/Blog';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
 import { createBlog, initBlogs, likeBlog } from './reducers/blogReducer';
 import { continueSession, loginUser } from './reducers/userReducer';
 import { notify } from './reducers/notificationReducer';
-import blogService from './services/blogs';
-import loginService from './services/login';
 import LoginPage from './components/LoginPage';
 import UserPage from './components/UserPage';
 import Header from './components/Header';
@@ -25,10 +28,6 @@ const formatAsBlog = (title, author, url, likes, user) => (
   }
 );
 
-const Notification = (notification) => <div>
-  {notification}
-</div>;
-
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -36,10 +35,9 @@ const App = () => {
   const notification = useSelector((state) => state.notification.notification);
   const blogs = useSelector((state) => state.blogs);
   const timeoutID = useSelector((state) => state.notification.timeoutID);
-  // const history = useHistory();
 
-  const handleLike = (blog, timeoutID) => {
-    clearTimeout(timeoutID);
+  const handleLike = (blog, toutID) => {
+    clearTimeout(toutID);
     dispatch(likeBlog(blog));
     dispatch(notify(`You like ${blog.title}`));
   };
@@ -142,7 +140,7 @@ const App = () => {
   }
 
   return (
-    <>
+    <Container>
       <Header
         notification={notification}
         username={user.username}
@@ -166,7 +164,7 @@ const App = () => {
           <Blogs user={user} blogs={blogs}/>
         </Route>
       </Switch>
-    </>
+    </Container>
   );
 };
 

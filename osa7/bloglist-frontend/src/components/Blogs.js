@@ -1,6 +1,7 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Blog from './Blog';
 import { deleteBlog } from '../reducers/blogReducer';
 
 const Blogs = (props) => {
@@ -22,6 +23,10 @@ const Blogs = (props) => {
       {blogsElement}
     </div>
   );
+};
+
+Blogs.PropTypes = {
+  blogs: PropTypes.array,
 };
 
 export default Blogs;

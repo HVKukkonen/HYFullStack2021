@@ -30,10 +30,9 @@ const update = async (blog) => {
 
 const remove = (id) => axios.delete(`${baseUrl}/${id}`);
 
-const comment = (com, id) => {
-  console.log('com at axios services', com);
-  console.log('id at axios services', id);
-  axios.post(`${baseUrl}/${id}/comments`, com);
+const comment = async (com, id) => {
+  const response = await axios.post(`${baseUrl}/${id}/comments`, { comment: com });
+  return response.data;
 };
 
 export default {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   Switch, Route, useRouteMatch,
 } from 'react-router-dom';
@@ -10,7 +10,7 @@ import Blog from './components/Blog';
 import Blogs from './components/Blogs';
 import HideableBlogForm from './components/BlogForm';
 import { initBlogs } from './reducers/blogReducer';
-import { continueSession, loginUser } from './reducers/userReducer';
+import { continueSession } from './reducers/userReducer';
 import LoginPage from './components/LoginPage';
 import UserPage from './components/UserPage';
 import Header from './components/Header';
@@ -22,18 +22,6 @@ const App = () => {
   const user = useSelector((state) => state.user);
   const allUsers = useSelector((state) => state.allUsers);
   const blogs = useSelector((state) => state.blogs);
-
-  // login
-  const [usernameHolder, setUsername] = useState('');
-  const usernameHandler = (charEvent) => setUsername(charEvent.target.value);
-  const [passwordHolder, setPassword] = useState('');
-  const passwordHandler = (charEvent) => setPassword(charEvent.target.value);
-
-  const loginSubmit = async (event) => {
-    event.preventDefault();
-    // set user with token as user
-    dispatch(loginUser(usernameHolder, passwordHolder));
-  };
 
   // fetch user from valid session
   useEffect(() => {
@@ -65,13 +53,7 @@ const App = () => {
 
   if (!user.username) {
     return (
-      <LoginPage
-        loginFormAction={loginSubmit}
-        usernameHolder={usernameHolder}
-        usernameHandler={usernameHandler}
-        passwordHolder={passwordHolder}
-        passwordHandler={passwordHandler}
-      />
+      <LoginPage />
     );
   }
 

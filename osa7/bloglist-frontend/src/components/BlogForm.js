@@ -1,6 +1,7 @@
 import { React, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import { TextField } from '@material-ui/core';
 import { createBlog } from '../reducers/blogReducer';
 
 const formatAsBlog = (title, author, url, likes, user) => (
@@ -36,21 +37,21 @@ const BlogForm = (props) => {
   return <form
     onSubmit={(e) => blogSubmit(e, dispatch, blog, props.setShowForm)}>
     title:
-    <input
+    <TextField
       id='blogform-title'
       value={blogName}
       onChange={blogNameHandler}
     />
     <br />
     author:
-    <input
+    <TextField
       id='blogform-author'
       value={author}
       onChange={authorHandler}
     />
     <br />
     url:
-    <input
+    <TextField
       id='blogform-url'
       value={url}
       onChange={urlHandler}
@@ -90,6 +91,12 @@ const HideableBlogForm = (props) => {
 BlogForm.propTypes = {
   blogName: PropTypes.string,
   author: PropTypes.string,
+  user: PropTypes.object,
+  setShowForm: PropTypes.func,
+};
+
+HideableBlogForm.propTypes = {
+  user: PropTypes.object,
 };
 
 export default HideableBlogForm;

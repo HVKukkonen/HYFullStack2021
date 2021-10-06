@@ -1,5 +1,6 @@
 import express from "express";
 import patientService from "../services/patientService";
+import { toNewPatient } from "../utils";
 
 const patientRouter = express.Router();
 
@@ -8,7 +9,16 @@ patientRouter.get('/', (_req, res) => {
 });
 
 patientRouter.post('/', (req, res) => {
-  return res.json(patientService.addPatient(req.body));
+  try {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const newPatient = toNewPatient(req.body);
+
+  res.json(patientService.addPatient(newPatient));
+
+  } catch (e) {
+    const message = (e as Error).message;
+    res.status(400).send({ error: message });
+  }
 });
 
 export default patientRouter;

@@ -17,17 +17,19 @@ const getPatients = (): SanitizedPatient[] => patients.map(
   (patient) => sanitize(patient)
 );
 
-  const addPatient = (newPatient: NewPatient): SanitizedPatient => {
-    const patient = {
-      ...newPatient,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-      id: uuid(),
-    };
+const getFullPatient = (id: string): Patient | undefined => patients.find((patient) => patient.id === id);
 
-    patients = patients.concat(patient);
-
-    return sanitize(patient);
+const addPatient = (newPatient: NewPatient): SanitizedPatient => {
+  const patient = {
+    ...newPatient,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    id: uuid(),
   };
 
-  export default { getPatients, addPatient };
+  patients = patients.concat(patient);
+
+  return sanitize(patient);
+};
+
+export default { getPatients, addPatient, getFullPatient };
   

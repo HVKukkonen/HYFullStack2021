@@ -8,6 +8,10 @@ patientRouter.get('/', (_req, res) => {
   return res.json(patientService.getPatients());
 });
 
+patientRouter.get('/:id', (req, res) => {
+  return res.json(patientService.getFullPatient(req.params.id));
+});
+
 patientRouter.post('/', (req, res) => {
   try {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

@@ -1,4 +1,4 @@
-import { SanitizedPatient, NewPatient, Patient } from "../types";
+import { SanitizedPatient, NewPatient, Patient, NewEntry } from "../types";
 import patientsData from "../../data/patients";
 import { v4 as uuid } from 'uuid';
 
@@ -31,5 +31,13 @@ const addPatient = (newPatient: NewPatient): SanitizedPatient => {
   return sanitize(patient);
 };
 
-export default { getPatients, addPatient, getFullPatient };
+const addEntry = (id: Patient['id'], entry: NewEntry): Patient => {
+  const patientIndex = patients.findIndex((patient) => patient.id === id);
+  // back-end
+  patients[patientIndex].entries = patients[patientIndex].entries.concat({ ...entry, id: uuid() });
+  // pass updated object to frontend
+  return patients[patientIndex];
+};
+
+export default { getPatients, addPatient, getFullPatient, addEntry };
   

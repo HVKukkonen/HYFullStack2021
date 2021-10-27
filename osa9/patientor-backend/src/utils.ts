@@ -1,4 +1,4 @@
-import { NewPatient, Gender, PatientFields } from './types';
+import { NewPatient, Gender, PatientFields, HospitalEntry, HealthCheckEntry, OccupationalHealthcareEntry } from './types';
 
 const isString = (str: unknown): str is string => (
   typeof str === 'string' || str instanceof String
@@ -38,3 +38,35 @@ export const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation } : Pa
 
   return newPatient;
 };
+
+interface Indexable {
+  [key: string]: any;
+}
+
+// validate that object has the property of specified type
+const validateProp = (obj: Indexable, prop: string, type: string) => (
+  typeof obj[prop] === type
+);
+
+const validForBaseEntry = (input: Indexable): boolean => (
+  validateProp(input, 'description', 'string') &&
+  validateProp(input, 'date', 'string') &&
+  validateProp(input, 'specialist', 'string')
+);
+
+export const validForHospitalEntry = (input: Indexable): input is HospitalEntry => (
+  validForBaseEntry(input) &&
+  // discharge is object
+  validateProp(input.discharge, 'date', 'string') &&
+  validateProp(input.discharge, 'criteria', 'string')
+);
+
+export const validForHealthCheckEntry = (input: Indexable): input is HealthCheckEntry => (
+  validForBaseEntry(input) &&
+  validateProp(input, 'healthCheckRating', 'number')
+);
+
+export const validForOccupationalEntry = (input: Indexable): input is OccupationalHealthcareEntry => (
+  validForBaseEntry(input) &&
+  validateProp(input, 'employerName', 'string')
+); 

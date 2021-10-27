@@ -1,0 +1,11 @@
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+      "date": "2021-01-02",
+      "type": "OccupationalHealthcare",
+      "specialist": "MD HVK",
+      "description": "Test.",
+      "employerName": "HVK Industries",
+      "id": "faultyinoputid"
+}

@@ -23,6 +23,6 @@ This repository offers my solutions to the remaining parts (excluding part 8) of
 - [unicafe-redux](https://github.com/HVKukkonen/HYFullStack2021/tree/main/osa6/unicafe-redux) - Remake of the core of the part 1 Unicafe exercise using Redux for state management.
 - [redux-anecdotes](https://github.com/HVKukkonen/HYFullStack2021/tree/main/osa6/redux-anecdotes) - Remake of the part 1 Anecdotes exercise using Redux for state management as well as REST operations with json-server and redux-thunk.
 
-## Part 5 - [Testing React apps, custom hooks](https://fullstackopen.com/en/part5)
+## 5 [Testing React apps, custom hooks](https://fullstackopen.com/en/part5)
 
 - [bloglist-frontend](https://github.com/HVKukkonen/HYFullStack2021/tree/main/osa5/bloglist-frontend) - A React frontend with Jest tests for the [part 4 backend](https://github.com/HVKukkonen/HYFullStack2020/tree/master/osa4/blogilista).

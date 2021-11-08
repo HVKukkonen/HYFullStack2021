@@ -3,15 +3,11 @@ import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
 
 import { TextField, SelectField, GenderOption } from "./FormField";
-import { Gender, Patient } from "../types";
+import { Gender, Patient, EntryFormProps } from "../types";
 
-/*
- * use type Patient, but omit id and entries,
- * because those are irrelevant for new patient object.
- */
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
 
-interface Props {
+export interface Props {
   onSubmit: (values: PatientFormValues) => void;
   onCancel: () => void;
 }

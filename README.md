@@ -4,6 +4,11 @@ This repository offers my solutions to the remaining parts (excluding part 8) of
 
 **Please, note the option to navigate to the course material through the header links.**
 
+## 11 [Continuous Integration, Continuous Delivery](https://fullstackopen.com/en/part11)
+
+- [pokedex](https://github.com/HVKukkonen/full-stack-open-pokedex) - A template application for developing the CI/CD pipeline.
+- [wish list](https://github.com/HVKukkonen/FSOPart11Last) - A remake of a personal project with a CI/CD pipeline.
+
 ## 9 [Typescript](https://fullstackopen.com/en/part9)
 
 - [patientor-frontend](https://github.com/HVKukkonen/HYFullStack2021/tree/main/osa9/patientor) - A Typescript React frontend for a medical record app modified from a template provided by the course.

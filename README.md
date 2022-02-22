@@ -12,7 +12,7 @@ This repository offers my solutions to the remaining parts (excluding part 8) of
 ## 9 [Typescript](https://fullstackopen.com/en/part9)
 
 - [patientor-frontend](https://github.com/HVKukkonen/HYFullStack2021/tree/main/osa9/patientor) - A Typescript React frontend for a medical record app modified from a template provided by the course.
-- [patientor-backend](https://github.com/jeremy-ebinum/full-stack-open-2020/tree/master/part9/patientor-backend) - A node/express RESTful server written in Typescript.
+- [patientor-backend](https://github.com/HVKukkonen/HYFullStack2021/tree/main/osa9/patientor-backend) - A node/express RESTful server written in Typescript.
 
 - [See the whole directory with minor exercises as well](https://github.com/HVKukkonen/HYFullStack2021/tree/main/osa9)
 

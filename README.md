@@ -4,6 +4,10 @@ This repository offers my solutions to the remaining parts (excluding part 8) of
 
 **Please, note the option to navigate to the course material through the header links.**
 
+## 12 [Containers](https://fullstackopen.com/en/part12)
+- [exercises](https://github.com/HVKukkonen/full-stack-open-part-12) - Exercises using Docker to containerise a given applications.
+- [own containerised project](https://github.com/HVKukkonen/full-stack-open-part-12-own) - Containerisation of a personal project using Docker.
+
 ## 11 [Continuous Integration, Continuous Delivery](https://fullstackopen.com/en/part11)
 
 - [pokedex](https://github.com/HVKukkonen/full-stack-open-pokedex) - A template application for developing the CI/CD pipeline.
